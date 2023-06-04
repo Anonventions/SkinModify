@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Minecraft Skin Modifier</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        #upload {
+            display: none;
+        }
+        label {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        #download {
+            display: none;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #008CBA;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Minecraft Skin Modifier</h1>
+        <p>Upload your skin to remove the second layer</p>
+        <input type="file" id="upload" accept="image/png">
+        <label for="upload">Upload Skin</label>
+        <canvas id="canvas" style="display:none;"></canvas>
+        <a id="download">Download Modified Skin</a>
+    </div>
+
+    <script>
+        const upload = document.getElementById('upload');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const download = document.getElementById('download');
+
+        const defaultSteveSkin = new Image();
+        defaultSteveSkin.crossOrigin = 'Anonymous';
+        defaultSteveSkin.src = 'https://i.imgur.com/Y3vXzNv.png'; // Replace with the URL of your default Steve skin
+
+        const defaultAlexSkin = new Image();
+        defaultAlexSkin.crossOrigin = 'Anonymous';
+        defaultAlexSkin.src = 'https://i.imgur.com/DSIM34W.png'; // Replace with the URL of your default Alex skin
+
+        upload.addEventListener('change', function() {
+            const file = this.files[0];
+            const img = new Image();
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const armWidth = ctx.getImageData(44, 20, 1, 12).data.reduce((acc, val, i) => i % 4 !== 3 ? acc + val : acc, 0);
+                const defaultSkin = armWidth > 0 ? defaultSteveSkin : defaultAlexSkin;
+                ctx.drawImage(defaultSkin, 0, 0);
+                ctx.globalCompositeOperation = 'source-atop';
+                ctx.drawImage(img, 0, 0);
+                ctx.globalCompositeOperation = 'source-over';
+                // Prepare download link
+                download.href = canvas.toDataURL();
+                download.download = 'modified_skin.png';
+                download.style.display = 'inline-block';
+            };
+            img.src = URL.createObjectURL(file);
+        });
+    </script>
+</body>
+</html>
