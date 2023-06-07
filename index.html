@@ -71,7 +71,6 @@
             <div id="thumbnails"></div>
         </div>
     </div>
-
     <script>
         const upload = document.getElementById('upload');
         const canvas = document.getElementById('canvas');
@@ -94,11 +93,11 @@
             img.onload = function() {
                 canvas.width = img.width;
                 canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                ctx.globalCompositeOperation = 'destination-in';
                 const armWidth = ctx.getImageData(44, 20, 1, 12).data.reduce((acc, val, i) => i % 4 !== 3 ? acc + val : acc, 0);
                 const defaultSkin = armWidth > 0 ? defaultSteveSkin : defaultAlexSkin;
                 ctx.drawImage(defaultSkin, 0, 0);
-                ctx.globalCompositeOperation = 'source-atop';
-                ctx.drawImage(img, 0, 0);
                 ctx.globalCompositeOperation = 'source-over';
                 // Prepare download link
                 download.href = canvas.toDataURL();
