@@ -1,3 +1,1 @@
-https://dcugithubzone.github.io/SkinModify/
-
-Website Link
+https://anonventions.github.io/SkinModify/
